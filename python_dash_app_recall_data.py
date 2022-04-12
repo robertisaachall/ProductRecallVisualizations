@@ -13,6 +13,12 @@ recall_amount_type = rds.createRecallRemedyCountryData(recall_data, "China")
 recall_columns = list(zip(*recall_amount))
 recall_columns_type = list(zip(*recall_amount_type))
 
+recall_data_AUS = pd.read_csv("data/Recall Action Result Summary Export - 20220412.csv")
+recall_data_AUS = recall_data_AUS.iloc[0:6583, ]
+recall_types_AUS = rds.create_recall_action_breakdown_AUS(recall_data_AUS)
+recall_action_types_AUS = rds.create_recall_action_level_breakdown_AUS(recall_data_AUS)
+recall_product_type_AUS = rds.create_recall_product_type_breakdown_AUS(recall_data_AUS)
+
 external_stylesheets = [
     {
         "rel": "stylesheet",
@@ -35,10 +41,11 @@ app.layout = html.Div(
         ),
         html.Div(
             children=[
-                html.H1(children=" Frequency for Each Location", className="first_graph_title"),
+                html.H1(children=" Frequency for Each Location", className="graph_title"),
                 html.P(
-                    children=" Individual product recall data based on individual countries and locations. Bar Graph is interactive to view the data better.",
-                    className="first_graph_description",
+                    children="Individual product recall data based on individual countries and locations. Bar Graph "
+                             "is interactive to view the data better.",
+                    className="graph_description",
                 ),
             ],
             className="first_graph",
@@ -59,11 +66,11 @@ app.layout = html.Div(
         ),
         html.Div(
             children=[
-                html.H1(children=" Recall Type Breakdown by Location", className="second_graph_title"),
+                html.H1(children=" Recall Type Breakdown by Location", className="graph_title"),
                 html.P(
                     children=" Analyze the amount of product recalls based on the number of occurrences by country, "
                              "and the type of recall breakdown by country.",
-                    className="second_graph_description",
+                    className="graph_description",
                 ),
             ],
             className="first_graph",
@@ -91,6 +98,82 @@ app.layout = html.Div(
                                            "data": [
                                                go.Pie(labels=recall_columns_type[0], values=recall_columns_type[1])
                                            ]
+                                       }),
+                    className="card",
+                ),
+            ],
+        ),
+        html.Div(
+            children=[
+                html.H1(children=" Recall Type Breakdown Australia", className="graph_title"),
+                html.P(
+                    children="Analyze the amount of product recall types for Australia broken down into corresponding "
+                             "sections regarding what type of recall was initiated.",
+                    className="graph_description",
+                ),
+            ],
+            className="third_graph",
+        ),
+        html.Div(
+            children=[
+                html.Div(
+                    children=dcc.Graph(id='recall_pie_chart_aus',
+                                       figure={
+                                           "data": [
+                                               go.Pie(labels=recall_types_AUS.iloc[:, 0],
+                                                      values=recall_types_AUS.iloc[:, 1])
+                                           ]
+                                       }),
+                    className="card",
+                ),
+            ],
+        ),
+        html.Div(
+            children=[
+                html.H1(children=" Recall Type Breakdown Specific Product Type Australia",
+                        className="graph_title"),
+                html.P(
+                    children=" Analyze the product recall type for the specific product recalled for Australia.",
+                    className="graph_description",
+                ),
+            ],
+            className="fourth_graph",
+        ),
+        html.Div(
+            children=[
+                html.Div(
+                    children=dcc.Graph(id='recall_pie_chart_aus_product',
+                                       figure={
+                                           "data": [
+                                               go.Pie(labels=recall_action_types_AUS.iloc[:, 0],
+                                                      values=recall_action_types_AUS.iloc[:, 1])
+                                           ]
+                                       }),
+                    className="card",
+                ),
+            ],
+        ),
+        html.Div(
+            children=[
+                html.H1(children=" Recall Type Breakdown Specific Product Type Australia",
+                        className="graph_title"),
+                html.P(
+                    children=" Analyze the product recall type for the specific product recalled for Australia.",
+                    className="graph_description",
+                ),
+            ],
+            className="fifth_graph",
+        ),
+        html.Div(
+            children=[
+                html.Div(
+                    children=dcc.Graph(id='recall_bar_chart_AUS',
+                                       figure={
+                                           "data": [
+                                               {'x': recall_product_type_AUS.iloc[:, 0],
+                                                'y': recall_product_type_AUS.iloc[:, 1], 'type': 'bar'}
+
+                                           ],
                                        }),
                     className="card",
                 ),
