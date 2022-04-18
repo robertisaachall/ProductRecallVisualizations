@@ -1,8 +1,8 @@
 import pandas as pd
 import re
 
-#https://apps.tga.gov.au/Prod/sara/arn-report.aspx
-
+# https://apps.tga.gov.au/Prod/sara/arn-report.aspx
+# https://data.world/nhtsa/nhtsas-odi-recalls/workspace/intro
 
 
 '''
@@ -98,3 +98,35 @@ def create_recall_product_type_breakdown_AUS(data):
         count = data["Type of Product"].tolist().count(recall_type)
         recall_product_type_level_breakdown.append([recall_type, count])
     return pd.DataFrame(recall_product_type_level_breakdown, columns=['Type of Product', 'Count']).drop_duplicates()
+
+
+def create_car_recall_year_count(data):
+    car_recall_year_count = []
+    for recall_year in data['YEARTXT'].unique():
+        if recall_year == 9999 or recall_year == "N/A":
+            continue
+        count = data['YEARTXT'].tolist().count(recall_year)
+        car_recall_year_count.append([recall_year, count])
+    return pd.DataFrame(car_recall_year_count, columns=['Year', 'Count']).drop_duplicates()
+
+
+def create_car_influenced_by_count(data):
+    car_influence_count = []
+    count_odi = data['INFLUENCED_BY'].tolist().count("ODI")
+    count_mfr = data['INFLUENCED_BY'].tolist().count("MFR")
+    count_ovsc = data['INFLUENCED_BY'].tolist().count("OVSC")
+    car_influence_count.append(["ODI", count_odi])
+    car_influence_count.append(["MFR", count_mfr])
+    car_influence_count.append(["OVSC", count_ovsc])
+    return pd.DataFrame(car_influence_count, columns=['Influence', 'Count'])
+
+
+def create_car_mfg_count(data):
+    car_mfg_data_count = []
+    for car_mfg in data['MFGTXT'].unique():
+        count = data['MFGTXT'].tolist().count(car_mfg)
+        if count >= 600:
+            car_mfg_data_count.append([car_mfg,count])
+        else:
+            continue
+    return pd.DataFrame(car_mfg_data_count, columns=['Manufacturer', 'Count']).drop_duplicates()

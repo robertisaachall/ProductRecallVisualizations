@@ -1,9 +1,7 @@
 import dash
-from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objs as go
 import RecallDataSetupUtilities as rds
 
@@ -18,6 +16,11 @@ recall_data_AUS = recall_data_AUS.iloc[0:6583, ]
 recall_types_AUS = rds.create_recall_action_breakdown_AUS(recall_data_AUS)
 recall_action_types_AUS = rds.create_recall_action_level_breakdown_AUS(recall_data_AUS)
 recall_product_type_AUS = rds.create_recall_product_type_breakdown_AUS(recall_data_AUS)
+
+recall_data_cars = pd.read_csv("data/FLAT_RCL_FLAT_RCL.csv", encoding='latin1')
+car_recall_data_years = rds.create_car_recall_year_count(recall_data_cars).sort_values(by=['Year'])
+car_recall_data_influence = rds.create_car_influenced_by_count(recall_data_cars)
+car_recall_mfg = rds.create_car_mfg_count(recall_data_cars).sort_values(by=['Count'])
 
 external_stylesheets = [
     {
@@ -105,6 +108,17 @@ app.layout = html.Div(
         ),
         html.Div(
             children=[
+                html.H1(children="Product Recall Analysis for Australia", className="header-title"),
+                html.P(
+                    children="Analyze the product recall breakdown for the country Australia, includes type "
+                             "breakdown, the recall type and the specific product recalls.",
+                    className="header-description",
+                ),
+            ],
+            className="header",
+        ),
+        html.Div(
+            children=[
                 html.H1(children=" Recall Type Breakdown Australia", className="graph_title"),
                 html.P(
                     children="Analyze the amount of product recall types for Australia broken down into corresponding "
@@ -120,8 +134,8 @@ app.layout = html.Div(
                     children=dcc.Graph(id='recall_pie_chart_aus',
                                        figure={
                                            "data": [
-                                               go.Pie(labels=recall_types_AUS.iloc[:, 0],
-                                                      values=recall_types_AUS.iloc[:, 1])
+                                               {'x': recall_types_AUS.iloc[:, 0],
+                                                'y': recall_types_AUS.iloc[:, 1], 'type': 'bar'}
                                            ]
                                        }),
                     className="card",
@@ -170,10 +184,99 @@ app.layout = html.Div(
                     children=dcc.Graph(id='recall_bar_chart_AUS',
                                        figure={
                                            "data": [
-                                               {'x': recall_product_type_AUS.iloc[:, 0],
-                                                'y': recall_product_type_AUS.iloc[:, 1], 'type': 'bar'}
+                                               go.Pie(labels=recall_product_type_AUS.iloc[:, 0],
+                                                      values=recall_product_type_AUS.iloc[:, 1])
 
                                            ],
+                                       }),
+                    className="card",
+                ),
+            ],
+        ),
+        html.Div(
+            children=[
+                html.H1(children="Product Recall Analysis Car Recall", className="header-title"),
+                html.P(
+                    children="Analyze the product recall information for car recalls since 1969. Includes various "
+                             "information about the recalls types and manufacturer.",
+                    className="header-description",
+                ),
+            ],
+            className="header",
+        ),
+        html.Div(
+            children=[
+                html.H1(children=" Car Recall Data Amount per Year - CARS",
+                        className="graph_title"),
+                html.P(
+                    children="Frequency over the year of recalls for specific car parts broken down into individual "
+                             "years.",
+                    className="graph_description",
+                ),
+            ],
+            className="fifth_graph",
+        ),
+        html.Div(
+            children=[
+                html.Div(
+                    children=dcc.Graph(id='recall_pie_chart_cars_year',
+                                       figure={
+                                           "data": [
+                                               {'x': car_recall_data_years.iloc[:, 0],
+                                                'y': car_recall_data_years.iloc[:, 1], 'type': 'bar'}
+                                           ]
+                                       }),
+                    className="card",
+                ),
+            ],
+        ),
+        html.Div(
+            children=[
+                html.H1(children=" Car Recall Influenced by which Entity Graphs",
+                        className="graph_title"),
+                html.P(
+                    children="Visualization of which specific entity initiated the car recall (OVSC,ODI,MFR)",
+                    className="graph_description",
+                ),
+            ],
+            className="fifth_graph",
+        ),
+        html.Div(
+            children=[
+                html.Div(
+                    children=dcc.Graph(id='recall_bar_chart_cars_influence',
+                                       figure={
+                                           "data": [
+                                               go.Pie(labels=car_recall_data_influence.iloc[:, 0],
+                                                      values=car_recall_data_influence.iloc[:, 1])
+
+                                           ],
+                                       }),
+                    className="card",
+                ),
+            ],
+        ),
+        html.Div(
+            children=[
+                html.H1(children=" Car Recall Count for Specific Manufacturers.",
+                        className="graph_title"),
+                html.P(
+                    children="Number of instances each manufacturer has had a product recalled, filtered with "
+                             "candidates above 600 instances.",
+                    className="graph_description",
+                ),
+            ],
+            className="fifth_graph",
+        ),
+        html.Div(
+            children=[
+                html.Div(
+                    children=dcc.Graph(id='recall_chart_cars_mfg',
+                                       figure={
+                                           "data": [
+                                               {'x': car_recall_mfg.iloc[:, 0],
+                                                'y': car_recall_mfg.iloc[:, 1], 'type': 'bar'}
+                                           ]
                                        }),
                     className="card",
                 ),
