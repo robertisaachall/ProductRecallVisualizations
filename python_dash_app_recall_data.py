@@ -33,10 +33,10 @@ app.layout = html.Div(
     children=[
         html.Div(
             children=[
-                html.H1(children="Product Recall Analysis", className="header-title"),
+                html.H1(children="Product Recall Analysis for the United States", className="header-title"),
                 html.P(
                     children="Analyze the amount of product recalls based on the number of occurrences by country, "
-                             "and the type of recall breakdown by country.",
+                             "and the type of recall breakdown for China.",
                     className="header-description",
                 ),
             ],
@@ -71,27 +71,11 @@ app.layout = html.Div(
             children=[
                 html.H1(children=" Recall Type Breakdown by Location", className="graph_title"),
                 html.P(
-                    children=" Analyze the amount of product recalls based on the number of occurrences by country, "
-                             "and the type of recall breakdown by country.",
+                    children=" Analyze the amount of product recalls based on the number of occurrences for China, ",
                     className="graph_description",
                 ),
             ],
             className="first_graph",
-        ),
-        html.Div(
-            children=[
-                html.Div(children="Region", className="menu-title"),
-                dcc.Dropdown(
-                    id="location-filter",
-                    options=[
-                        {"label": region, "value": region}
-                        for region in recall_columns[0]
-                    ],
-                    value="COUNTRY",
-                    clearable=False,
-                    className="dropdown",
-                ),
-            ]
         ),
         html.Div(
             children=[
@@ -121,7 +105,7 @@ app.layout = html.Div(
             children=[
                 html.H1(children=" Recall Type Breakdown Australia", className="graph_title"),
                 html.P(
-                    children="Analyze the amount of product recall types for Australia broken down into corresponding "
+                    children="Analyze the amount of product recall use cases for Australia broken down into corresponding "
                              "sections regarding what type of recall was initiated.",
                     className="graph_description",
                 ),
@@ -144,10 +128,10 @@ app.layout = html.Div(
         ),
         html.Div(
             children=[
-                html.H1(children=" Recall Type Breakdown Specific Product Type Australia",
+                html.H1(children=" Recall Type Breakdown Product Use Cases - Australia",
                         className="graph_title"),
                 html.P(
-                    children=" Analyze the product recall type for the specific product recalled for Australia.",
+                    children=" Analyze the product recall type for the specific use cases recalled for  - Australia. ",
                     className="graph_description",
                 ),
             ],
